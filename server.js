@@ -233,4 +233,16 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`[🌐] Server đang chạy tại http://localhost:${PORT}`);
   connectWebSocket();
+
+  // Tự ping để chống ngủ (Render)
+  const RENDER_EXTERNAL_URL = process.env.RENDER_EXTERNAL_URL;
+  if (RENDER_EXTERNAL_URL) {
+    setInterval(() => {
+      axios.get(RENDER_EXTERNAL_URL)
+        .then(() => console.log('[📡] Tự ping duy trì server thành công'))
+        .catch(err => console.error('[⚠️] Lỗi tự ping:', err.message));
+    }, 5 * 60 * 1000); // 5 phút/lần
+  } else {
+    console.log('[ℹ️] Lưu ý: Hãy cấu hình RENDER_EXTERNAL_URL trong Dashboard Render để server không bị ngủ.');
+  }
 });
